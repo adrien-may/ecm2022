@@ -1,0 +1,15 @@
+pytest-env
+coverage
+factory-boy
+Faker
+freezegun
+pytest
+pytest-cov
+pytest-mock
+pytest-sugar
+responses
+testfixtures
+black
+pytest-watch
+mypy
+pytest-mypy
