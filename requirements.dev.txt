@@ -11,5 +11,3 @@ responses
 testfixtures
 black
 pytest-watch
-mypy
-pytest-mypy
