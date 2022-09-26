@@ -12,3 +12,4 @@ testfixtures
 black
 pytest-watch
 pytest-flask
+pytest-flask-sqlalchemy
