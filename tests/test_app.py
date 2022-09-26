@@ -1,5 +1,8 @@
 from flask import Flask
 
+from tasks.tests.factories import TaskFactory
+
+
 def test_app(app):
     assert app is not None
     assert isinstance(app, Flask)
@@ -35,6 +38,9 @@ def test_user_view_uses_correct_template(client, captured_templates, user_name):
     assert context["name"] == user_name
 
 
-def test_professor_view(app, client):
-    response = client.get("/professor")
-    assert response.json["name"] == "Adrien"
+def test_todoz(app, client, db_session):
+    task = TaskFactory()
+    db_session.commit()
+
+    response = client.get("/todoz")
+    assert len(response.json["results"]) > 0
