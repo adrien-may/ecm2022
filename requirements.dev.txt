@@ -11,3 +11,4 @@ responses
 testfixtures
 black
 pytest-watch
+pytest-flask
