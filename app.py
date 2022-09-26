@@ -13,4 +13,14 @@ def create_app():
     def user(name):
         return render_template('user.html', name=name)
 
+    @app.route('/professor')
+    def my_api_route():
+        return {
+            "name": "Adrien",
+            "birthday": "02 January",
+            "age": 85,
+            "sex": None,
+            "friends": ["Amadou", "Mariam"]
+        }
+
     return app

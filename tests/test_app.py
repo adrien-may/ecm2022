@@ -33,3 +33,8 @@ def test_user_view_uses_correct_template(client, captured_templates, user_name):
 
     assert "name" in context
     assert context["name"] == user_name
+
+
+def test_professor_view(app, client):
+    response = client.get("/professor")
+    assert response.json["name"] == "Adrien"
