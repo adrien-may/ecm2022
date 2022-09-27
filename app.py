@@ -1,43 +1,42 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask
 
+from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_smorest import Api
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
+ma = Marshmallow()
+
 
 def create_app():
-    from tasks.models import Task
-
-
     app = Flask(__name__)
-    @app.route('/')
+
+    @app.route("/")
     def index():
-        return '<h1>ECM Bonjour</h1>'
+        return "<h1>ECM Bonjour</h1>"
 
-    @app.route('/user/<name>')
-    def user(name):
-        return render_template('user.html', name=name)
-
-    @app.route('/todoz')
-    def my_api_route():
-        tasks = Task.query.all()
-        return {
-            "results": [
-                {
-                    field: getattr(task, field)
-                    for field in Task.__table__.columns.keys()
-                }
-                for task in tasks
-            ]
-        }
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data.sqlite')}"
-    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = f"sqlite:///{os.path.join(basedir, 'data.sqlite')}"
+    app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
+    app.config['API_TITLE'] = 'My ECM API'
+    app.config["API_VERSION"] = "1"
+    app.config["OPENAPI_VERSION"] = "3.0.2"
+    app.config["OPENAPI_URL_PREFIX"] = "/openapi"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/api"
+    app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
     db.init_app(app)
-
+    ma.init_app(app)
     Migrate(app, db)
+    api = Api(app)
+
+    from tasks.views import task_blueprint
+
+    api.register_blueprint(task_blueprint)
+
     return app
