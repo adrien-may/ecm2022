@@ -30,7 +30,6 @@ class Tasks(MethodView):
             db.session.commit()
             return task
         except Exception as e:
-            print(e)
             db.session.rollback()
             abort(400, message="An error occurred")
 
@@ -42,20 +41,28 @@ class TasksById(MethodView):
         """Get task by ID"""
         return Task.query.get_or_404(task_id)
 
-    @task_blueprint.arguments(TaskSchema(only=["title", "done"]))
+    @task_blueprint.arguments(TaskSchema(only=["title"]))
     @task_blueprint.response(200, TaskSchema)
     def put(self, update_data, task_id):
         """Update existing task"""
-        print(update_data)
         try:
             task = Task.query.get_or_404(task_id)
-            print(update_data)
-            print(update_data["title"])
             task.title = update_data["title"]
             db.session.commit()
         except Exception as e:
-            print(e)
-            print('execption')
+            db.session.rollback()
+            abort(400, message="An error occurred")
+        return task
+
+    @task_blueprint.arguments(TaskSchema(only=["done"]))
+    @task_blueprint.response(200, TaskSchema)
+    def patch(self, update_data, task_id):
+        """Update existing task"""
+        try:
+            task = Task.query.get_or_404(task_id)
+            task.done = update_data["done"]
+            db.session.commit()
+        except Exception as e:
             db.session.rollback()
             abort(400, message="An error occurred")
         return task
