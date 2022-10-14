@@ -12,3 +12,4 @@ marshmallow
 marshmallow-sqlalchemy
 flask-marshmallow
 flask-smorest
+flask-cors
