@@ -40,33 +40,40 @@ def test_tasks_update_one(app, client, db_session):
     task = TaskFactory()
     db_session.commit()
     task2 = Task.query.filter_by(title=task.title).first()
-    print(task2.id)
     response = client.put(
         f"/tasks/{task2.id}",
         data=json.dumps({"title": new_title}),
         content_type="application/json",
     )
-    print(response.get_data())
     assert response.status_code == 200
-
-    print(Task.query.filter_by(title=new_title).all())
 
     Task.query.filter_by(title="already_existing").delete()
     db_session.commit()
     TaskFactory(title="already_existing")
     db_session.commit()
     task3 = Task.query.filter_by(title=new_title).first()
-    print(task3)
-    print(Task.query.filter_by(title=new_title).all())
-
     response = client.put(
         f"/tasks/{task3.id}",
         data=json.dumps({"title": "already_existing"}),
         content_type="application/json"
     )
-    print(Task.query.filter_by(title=new_title).all())
 
     assert response.status_code == 400
+
+def test_tasks_patch_one(app, client, db_session):
+    new_title = "new_title"
+    # Ensure no task persist with this title
+    Task.query.filter_by(title=new_title).delete()
+
+    task = TaskFactory()
+    db_session.commit()
+    task2 = Task.query.filter_by(title=task.title).first()
+    response = client.patch(
+        f"/tasks/{task2.id}",
+        data=json.dumps({"done": True}),
+        content_type="application/json",
+    )
+    assert response.status_code == 200
 
 
 def test_tasks_delete_one(app, client, db_session):

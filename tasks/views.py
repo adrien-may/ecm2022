@@ -58,13 +58,9 @@ class TasksById(MethodView):
     @task_blueprint.response(200, TaskSchema)
     def patch(self, update_data, task_id):
         """Update existing task"""
-        try:
-            task = Task.query.get_or_404(task_id)
-            task.done = update_data["done"]
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            abort(400, message="An error occurred")
+        task = Task.query.get_or_404(task_id)
+        task.done = update_data["done"]
+        db.session.commit()
         return task
 
     @task_blueprint.response(204)
